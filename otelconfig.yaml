@@ -1,0 +1,53 @@
+# OpenTelemetry declarative configuration (file_format 1.0) for Honeycomb.
+#
+# NOTE ON SCOPE: the Next.js server does NOT read this file. Next initializes
+# OpenTelemetry through `instrumentation.ts` (via @vercel/otel), which is the
+# only mechanism that works for `next dev` / `next start` / serverless.
+#
+# This file is the canonical, vendor-neutral config for anything that DOES run
+# as a plain Node process you control (a standalone worker/cron, or the OTel
+# Collector). Consume it with:
+#   OTEL_CONFIG_FILE=./otelconfig.yaml node -r ./tracing.js your-worker.js
+file_format: "1.0"
+
+resource:
+  attributes:
+    - name: service.name
+      value: ${OTEL_SERVICE_NAME:-equilibris-web}
+
+tracer_provider:
+  processors:
+    - batch:
+        exporter:
+          otlp_http:
+            endpoint: https://api.honeycomb.io
+            headers:
+              - name: x-honeycomb-team
+                value: ${HONEYCOMB_API_KEY}
+
+meter_provider:
+  readers:
+    - periodic:
+        exporter:
+          otlp_http:
+            endpoint: https://api.honeycomb.io
+            headers:
+              - name: x-honeycomb-team
+                value: ${HONEYCOMB_API_KEY}
+              - name: x-honeycomb-dataset
+                value: ${HONEYCOMB_METRICS_DATASET:-metrics}
+
+logger_provider:
+  processors:
+    - batch:
+        exporter:
+          otlp_http:
+            endpoint: https://api.honeycomb.io
+            headers:
+              - name: x-honeycomb-team
+                value: ${HONEYCOMB_API_KEY}
+
+propagator:
+  composite:
+    - tracecontext:
+    - baggage:
