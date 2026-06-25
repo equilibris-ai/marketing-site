@@ -13,8 +13,8 @@ export default defineConfig({
     // — the transaction pooler (:6543) can't run migrations. Falls back to the
     // runtime DSN, then the local Prisma Postgres dev server.
     url:
-      process.env["DATABASE_DIRECT_DSN"] ??
       process.env["DATABASE_DSN"] ??
+      process.env["DATABASE_DIRECT_DSN"] ??
       process.env["DATABASE_URL"],
   },
 });
