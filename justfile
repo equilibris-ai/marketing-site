@@ -33,6 +33,17 @@ dev:
 build:
     bun run build
 
+# Run the unit test suite
+test:
+    bun test
+
+# Lint with ESLint
+lint:
+    bun run lint
+
+# Lint, test, and build — the full pre-push gate
+check: lint test build
+
 # Remove build artifacts, caches, generated client, and installed dependencies
 clean:
     rm -rf .next node_modules .turbo src/generated
