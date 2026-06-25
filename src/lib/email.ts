@@ -1,5 +1,5 @@
 import { Resend } from "resend";
-import { verificationUrl } from "@/lib/verification";
+import { baseUrl, verificationUrl } from "@/lib/verification";
 import { createLogger } from "@/lib/logger";
 import { withSpan } from "@/lib/tracing";
 
@@ -7,6 +7,13 @@ const FROM = process.env.EMAIL_FROM ?? "Equilibris <onboarding@resend.dev>";
 // Optional. Where human replies should go (the From subdomain is send-only).
 const REPLY_TO = process.env.EMAIL_REPLY_TO || undefined;
 const log = createLogger("email");
+
+/** Absolute URL to a file in /public — emails can't use relative asset paths. */
+function asset(path: string): string {
+  const base = baseUrl();
+  const origin = base.startsWith("http") ? base : `https://${base}`;
+  return `${origin}${path}`;
+}
 
 /**
  * Send the double-opt-in verification email.
@@ -67,6 +74,58 @@ export async function sendVerificationEmail(params: {
       span.setAttribute("app.email.sent", true);
       if (data?.id) span.setAttribute("app.email.message_id", data.id);
       log.success(`Verification email sent to ${params.to}`);
+    },
+  );
+}
+
+/**
+ * Send the post-confirmation welcome email. Best-effort: callers should treat a
+ * failure as non-fatal (the lead is already verified) and not surface it to the
+ * user. Falls back to a console log when RESEND_API_KEY is unset.
+ */
+export async function sendWelcomeEmail(params: {
+  to: string;
+  name?: string | null;
+}): Promise<void> {
+  const apiKey = process.env.RESEND_API_KEY;
+  if (!apiKey) {
+    log.warn(`RESEND_API_KEY not set — skipping welcome email for ${params.to}`);
+    return;
+  }
+
+  const logoUrl = asset("/assets/images/logos/equilibris-logo-full.png");
+  const resend = new Resend(apiKey);
+  log.start(`Sending welcome email to ${params.to} via Resend`);
+
+  await withSpan(
+    "email.send_welcome",
+    { "app.email.provider": "resend", "app.email.kind": "welcome", "app.email.to": params.to },
+    async (span) => {
+      const { data, error } = await resend.emails.send({
+        from: FROM,
+        to: params.to,
+        ...(REPLY_TO ? { replyTo: REPLY_TO } : {}),
+        subject: "Thank you for signing up — Equilibris",
+        text: `Thank you for signing up! We'll let you know as soon as the MVP is live!\n\n— Equilibris.ai Team`,
+        html: `
+      <div style="font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;max-width:520px;margin:0 auto;color:#0b1020;text-align:center">
+        <img src="${logoUrl}" alt="Equilibris" width="200" style="max-width:200px;height:auto;margin:8px auto 24px;display:block" />
+        <p style="margin:0 0 16px;font-size:17px;line-height:1.5">Thank you for signing up! We&rsquo;ll let you know as soon as the MVP is live!</p>
+        <p style="margin:24px 0 0;color:#3a4256;font-weight:600">&mdash; Equilibris.ai Team</p>
+      </div>
+    `,
+      });
+
+      if (error) {
+        span.setAttribute("app.email.sent", false);
+        span.setAttribute("exception.slug", "err-resend-send-failed");
+        log.error(`Resend welcome send failed for ${params.to}: ${error.message}`);
+        throw new Error(`Resend welcome send failed: ${error.message}`);
+      }
+
+      span.setAttribute("app.email.sent", true);
+      if (data?.id) span.setAttribute("app.email.message_id", data.id);
+      log.success(`Welcome email sent to ${params.to}`);
     },
   );
 }

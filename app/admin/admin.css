@@ -1,0 +1,229 @@
+/* ============================================================
+   Equilibris admin — internal dashboard styles.
+   Self-contained (Tailwind utilities are inert in this project),
+   reusing the brand palette from app/globals.css.
+   ============================================================ */
+
+.admin-shell {
+  --admin-ink: #06080f;
+  --admin-navy: #0a0e27;
+  --admin-panel: #111634;
+  --admin-line: #1e2547;
+  --admin-cyan: #22d3ee;
+  --admin-mist: #aeb9d6;
+  --admin-white: #f4f7ff;
+  --admin-danger: #f87171;
+
+  min-height: 100vh;
+  background: var(--admin-ink);
+  color: var(--admin-white);
+  font-family: var(--font-dosis), system-ui, sans-serif;
+  padding: 2.5rem 1.5rem;
+}
+
+.admin-card {
+  background: var(--admin-navy);
+  border: 1px solid var(--admin-line);
+  border-radius: 14px;
+}
+
+/* ---- Header ---- */
+.admin-wrap {
+  max-width: 1080px;
+  margin: 0 auto;
+}
+.admin-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.75rem;
+}
+.admin-title {
+  margin: 0;
+  font-size: 1.6rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+}
+.admin-sub {
+  margin: 0.25rem 0 0;
+  color: var(--admin-mist);
+  font-size: 0.9rem;
+}
+
+/* ---- Stats ---- */
+.admin-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+.admin-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  padding: 1.1rem 1.25rem;
+}
+.admin-stat-num {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--admin-cyan);
+  line-height: 1;
+}
+.admin-stat-label {
+  font-size: 0.82rem;
+  color: var(--admin-mist);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+/* ---- Table ---- */
+.admin-table-card {
+  padding: 0.25rem 0;
+  overflow-x: auto;
+}
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.92rem;
+}
+.admin-table th,
+.admin-table td {
+  text-align: left;
+  padding: 0.7rem 1rem;
+  border-bottom: 1px solid var(--admin-line);
+  white-space: nowrap;
+}
+.admin-table th {
+  color: var(--admin-mist);
+  font-weight: 600;
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.admin-table tbody tr:last-child td {
+  border-bottom: none;
+}
+.admin-email {
+  font-weight: 600;
+}
+.admin-muted {
+  color: var(--admin-mist);
+}
+.admin-nowrap {
+  white-space: nowrap;
+}
+.admin-empty {
+  padding: 2rem 1.25rem;
+  color: var(--admin-mist);
+  text-align: center;
+}
+
+/* ---- Badges ---- */
+.admin-badge {
+  display: inline-block;
+  padding: 0.15rem 0.55rem;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+.admin-badge-ok {
+  background: rgba(34, 211, 238, 0.12);
+  color: var(--admin-cyan);
+}
+.admin-badge-pending {
+  background: rgba(174, 185, 214, 0.12);
+  color: var(--admin-mist);
+}
+
+/* ---- Buttons ---- */
+.admin-btn {
+  background: var(--admin-panel);
+  color: var(--admin-white);
+  border: 1px solid var(--admin-line);
+  border-radius: 9px;
+  padding: 0.5rem 0.9rem;
+  font-size: 0.88rem;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  transition: border-color 0.15s ease, opacity 0.15s ease;
+}
+.admin-btn:hover {
+  border-color: var(--admin-cyan);
+}
+.admin-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+.admin-btn-sm {
+  padding: 0.35rem 0.7rem;
+  font-size: 0.82rem;
+}
+.admin-btn-primary {
+  background: var(--admin-cyan);
+  color: var(--admin-ink);
+  border-color: var(--admin-cyan);
+  width: 100%;
+  margin-top: 1rem;
+}
+.admin-btn-danger {
+  color: var(--admin-danger);
+}
+.admin-btn-danger:hover {
+  border-color: var(--admin-danger);
+}
+.admin-row-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+/* ---- Login ---- */
+.admin-login {
+  min-height: 70vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.admin-login-form {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 360px;
+  padding: 2rem;
+}
+.admin-login-form .admin-title {
+  margin-bottom: 0.25rem;
+}
+.admin-login-form .admin-sub {
+  margin-bottom: 1.5rem;
+}
+.admin-label {
+  font-size: 0.82rem;
+  color: var(--admin-mist);
+  margin: 0.75rem 0 0.35rem;
+}
+.admin-input {
+  background: var(--admin-ink);
+  border: 1px solid var(--admin-line);
+  border-radius: 9px;
+  padding: 0.6rem 0.75rem;
+  color: var(--admin-white);
+  font-family: inherit;
+  font-size: 0.95rem;
+}
+.admin-input:focus {
+  outline: none;
+  border-color: var(--admin-cyan);
+}
+.admin-error {
+  color: var(--admin-danger);
+  font-size: 0.85rem;
+  margin: 0.75rem 0 0;
+}
+
+@media (max-width: 720px) {
+  .admin-stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

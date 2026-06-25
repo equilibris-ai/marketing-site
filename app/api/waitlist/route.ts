@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { createVerificationToken } from "@/lib/verification";
-import { sendVerificationEmail } from "@/lib/email";
+import { issueAndSendVerification } from "@/lib/waitlist";
 import { createLogger } from "@/lib/logger";
 import { annotate, withSpan } from "@/lib/tracing";
 
@@ -65,15 +64,8 @@ export async function POST(request: Request) {
     return NextResponse.json({ status: "already_verified" }, { status: 200 });
   }
 
-  const { raw, hash, expiresAt } = createVerificationToken();
-  await withSpan(
-    "db.token.create",
-    { "db.system": "postgresql", "db.operation": "insert", "db.sql.table": "verification_tokens" },
-    () => prisma.verificationToken.create({ data: { token: hash, leadId: lead.id, expiresAt } }),
-  );
+  const expiresAt = await issueAndSendVerification(lead);
   log.info(`Verification token issued for ${lead.email} (expires ${expiresAt.toISOString()})`);
-
-  await sendVerificationEmail({ to: lead.email, name: lead.name, rawToken: raw });
 
   annotate({ "app.outcome": "verification_sent" });
   return NextResponse.json({ status: "verification_sent" }, { status: 201 });
