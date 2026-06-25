@@ -26,12 +26,12 @@ db-reset:
     bunx prisma migrate reset --schema=prisma/schema.prisma -f
 
 # Run the Next.js dev server (http://localhost:3000)
-dev:
-    bun run dev
+start:
+    npx next start
 
 # Build the production bundle
 build:
-    bun run build
+    npx prisma generate && npx next build
 
 # Run the unit test suite
 test:

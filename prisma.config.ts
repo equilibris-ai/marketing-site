@@ -10,11 +10,15 @@ export default defineConfig({
   },
   datasource: {
     // The CLI (migrate / db push / studio) must use the SESSION pooler (:5432)
-    // — the transaction pooler (:6543) can't run migrations. Falls back to the
-    // runtime DSN, then the local Prisma Postgres dev server.
+    // — the transaction pooler (:6543) can't run migrations. Prefer the direct
+    // DSN (or the Vercel/Supabase non-pooling URL), then fall back to the
+    // pooled runtime DSN as a last resort.
     url:
-      process.env["DATABASE_DSN"] ??
       process.env["DATABASE_DIRECT_DSN"] ??
+      process.env["POSTGRES_URL_NON_POOLING"] ??
+      process.env["DIRECT_URL"] ??
+      process.env["DATABASE_DSN"] ??
+      process.env["POSTGRES_PRISMA_URL"] ??
       process.env["DATABASE_URL"],
   },
 });
