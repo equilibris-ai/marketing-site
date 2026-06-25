@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { hashToken } from "@/lib/verification";
+import { sendWelcomeEmail } from "@/lib/email";
 import { createLogger } from "@/lib/logger";
 import { annotate, withSpan } from "@/lib/tracing";
 
@@ -30,7 +31,7 @@ export async function GET(request: Request) {
   }
 
   // Mark the lead verified and burn the token in one transaction.
-  await withSpan(
+  const [lead] = await withSpan(
     "db.verify.transaction",
     { "db.system": "postgresql", "db.operation": "transaction", "app.lead.id": record.leadId },
     () =>
@@ -48,5 +49,14 @@ export async function GET(request: Request) {
 
   annotate({ "app.verify.result": "success", "app.lead.id": record.leadId });
   log.success(`Email verified for lead ${record.leadId}`);
+
+  // Best-effort welcome — verification is already committed, so a failed send
+  // must not break the redirect or the user's confirmation.
+  try {
+    await sendWelcomeEmail({ to: lead.email, name: lead.name });
+  } catch (error) {
+    log.error(`Welcome email failed for ${lead.email}: ${String(error)}`);
+  }
+
   return redirectHome(request, "success");
 }
