@@ -1,7 +1,9 @@
 "use client";
 
+import Link from "next/link";
 import { useActionState } from "react";
 import { signIn, type SignInState } from "./actions";
+import { AuthCard } from "../AuthCard";
 
 const INITIAL: SignInState = {};
 
@@ -9,11 +11,8 @@ export default function AdminLoginPage() {
   const [state, formAction, pending] = useActionState(signIn, INITIAL);
 
   return (
-    <div className="admin-login">
-      <form className="admin-card admin-login-form" action={formAction}>
-        <h1 className="admin-title">Admin sign in</h1>
-        <p className="admin-sub">Equilibris waitlist dashboard</p>
-
+    <AuthCard title="Admin access" subtitle="Equilibris waitlist console">
+      <form className="admin-auth-form" action={formAction}>
         <label className="admin-label" htmlFor="email">
           Email
         </label>
@@ -45,9 +44,13 @@ export default function AdminLoginPage() {
         )}
 
         <button className="admin-btn admin-btn-primary" type="submit" disabled={pending}>
-          {pending ? "Signing in…" : "Sign in"}
+          {pending ? "Authenticating…" : "Sign in"}
         </button>
+
+        <Link className="admin-link" href="/admin/forgot-password">
+          Forgot your password?
+        </Link>
       </form>
-    </div>
+    </AuthCard>
   );
 }

@@ -36,18 +36,22 @@ export async function updateSession(request: NextRequest) {
   } = await supabase.auth.getUser();
 
   const { pathname } = request.nextUrl;
-  const isLogin = pathname === "/admin/login";
+  // Pages reachable without a session — the whole point of password recovery is
+  // that the admin can't sign in yet. /admin/reset establishes the recovery
+  // session itself before forwarding to the (gated) update-password page.
+  const PUBLIC_ADMIN_PATHS = ["/admin/login", "/admin/forgot-password", "/admin/reset"];
+  const isPublic = PUBLIC_ADMIN_PATHS.includes(pathname);
   const allowed = Boolean(user) && isAdminEmail(user?.email);
 
   // Unauthenticated / non-allowlisted visitor to a protected admin page.
-  if (!isLogin && !allowed) {
+  if (!isPublic && !allowed) {
     const url = request.nextUrl.clone();
     url.pathname = "/admin/login";
     return NextResponse.redirect(url);
   }
 
   // Already-authenticated admin landing on the login page → dashboard.
-  if (isLogin && allowed) {
+  if (pathname === "/admin/login" && allowed) {
     const url = request.nextUrl.clone();
     url.pathname = "/admin";
     return NextResponse.redirect(url);
