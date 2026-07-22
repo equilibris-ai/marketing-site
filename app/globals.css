@@ -1,528 +1,196 @@
 /* ============================================================
-   Equilibris — global styles (dark theme only)
-   Palette derived from the brand logo:
-     ink     #06080f  near-black navy backdrop
-     navy    #0a0e27  deep navy panels
-     cyan    #22d3ee  electric cyan accent (logo circuitry)
-     cyanHi  #67e8f9  bright cyan highlight
-     mist    #aeb9d6  muted blue-grey body text
-     white   #f4f7ff  near-white headings
+   Equilibris — static landing page (dark theme only)
+   Ported 1:1 from public/index.html; that file is the design
+   source of truth. Keep the two in sync.
    ============================================================ */
 
-/* ---- Local display + mono fonts ---- */
-@font-face {
-  font-family: "Sprig Sans";
-  src: url("/assets/fonts/faire-sprigsans-regular.woff2") format("woff2");
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: "Sprig Sans";
-  src: url("/assets/fonts/faire-sprigsans-bold.woff2") format("woff2");
-  font-weight: 700;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: "Sprig Sans";
-  src: url("/assets/fonts/faire-sprigsans-black.woff2") format("woff2");
-  font-weight: 900;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: "Sprig Sans";
-  src: url("/assets/fonts/faire-sprigsans-blackitalic.woff2") format("woff2");
-  font-weight: 900;
-  font-style: italic;
-  font-display: swap;
-}
-@font-face {
-  font-family: "Maple Mono";
-  src: url("/assets/fonts/maple-mono-nl-regular.woff2") format("woff2");
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: "Maple Mono";
-  src: url("/assets/fonts/maple-mono-nl-semibold.woff2") format("woff2");
-  font-weight: 600;
-  font-style: normal;
-  font-display: swap;
-}
-
 :root {
-  --ink: #06080f;
-  --navy: #0a0e27;
-  --navy-2: #0e1430;
-  --cyan: #22d3ee;
-  --cyan-hi: #67e8f9;
-  --cyan-deep: #0b97b3;
-  --mist: #aeb9d6;
-  --white: #f4f7ff;
-  --line: rgba(103, 232, 249, 0.16);
-
-  --font-display: "Sprig Sans", var(--font-dosis), system-ui, sans-serif;
-  --font-ui: var(--font-dosis), "Sprig Sans", system-ui, sans-serif;
-  --font-mono: "Maple Mono", ui-monospace, "SFMono-Regular", monospace;
+  --accent: #6d28d9; /* royal violet */
+  --accent-2: #5b21b6;
+  --accent-soft: #a78bfa;
+  --bg: #0b0f19; /* flat logo background */
+  --panel: #111624; /* CTA block */
+  --panel-line: rgba(255, 255, 255, 0.1);
+  --text: #eef0f6;
+  --muted: #8a90a6;
+  --field: #0d1220;
 }
-
 * {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
 }
-
-html {
-  scroll-behavior: smooth;
-}
-
+html,
 body {
-  background-color: var(--ink);
-  color: var(--mist);
-  font-family: var(--font-ui);
-  font-weight: 500;
-  line-height: 1.6;
-  -webkit-font-smoothing: antialiased;
-  text-rendering: optimizeLegibility;
+  height: 100%;
+}
+body {
+  font-family: var(--font-inter), 'Inter', system-ui, -apple-system, sans-serif;
+  color: var(--text);
+  background: var(--bg); /* flat background, no gradients */
   min-height: 100vh;
-  overflow-x: hidden;
-}
-
-::selection {
-  background: var(--cyan);
-  color: var(--ink);
-}
-
-a {
-  color: var(--cyan-hi);
-  text-decoration: none;
-}
-
-/* Vanta mount sits behind everything, fixed to the viewport */
-.vanta-bg {
-  position: fixed;
-  inset: 0;
-  z-index: 0;
-}
-
-/* Subtle vignette over the animated background for legibility */
-.vanta-veil {
-  position: fixed;
-  inset: 0;
-  z-index: 1;
-  pointer-events: none;
-  background:
-    radial-gradient(120% 90% at 50% 0%, rgba(6, 8, 15, 0) 35%, rgba(6, 8, 15, 0.72) 100%),
-    linear-gradient(180deg, rgba(6, 8, 15, 0.35) 0%, rgba(6, 8, 15, 0.1) 30%, rgba(6, 8, 15, 0.55) 100%);
-}
-
-.page {
-  position: relative;
-  z-index: 2;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  min-height: 100vh;
-  padding: 0 24px;
+  -webkit-font-smoothing: antialiased;
+}
+.wrap {
+  width: 100%;
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 0 40px;
 }
 
-/* ---------- Top nav ---------- */
-.topbar {
-  width: 100%;
-  max-width: 1240px;
+header {
+  padding: 34px 0;
+}
+.bar {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 20px 4px;
+  gap: 16px;
 }
-
-.brand {
+.logo {
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 11px;
+  text-decoration: none;
 }
-
-/* The symbol PNG ships on a white field — frame it as a rounded app icon so
-   it reads as deliberate against the dark page. */
-.brand img {
-  width: 80px;
-  height: 80px;
-  border-radius: 18px;
-  border: 1px solid var(--line);
-  box-shadow: 0 0 26px rgba(34, 211, 238, 0.32);
+.logo img {
+  height: 38px;
+  width: auto;
+  display: block;
+} /* no shadow / glow */
+.logo,
+.word {
+  color: var(--text);
 }
-
-.brand-name {
-  font-family: var(--font-display);
-  font-weight: 900;
-  letter-spacing: 0.16em;
-  font-size: 1.35rem;
-  color: var(--white);
-  text-transform: uppercase;
+.word {
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
 }
-
-.nav-pill {
-  font-family: var(--font-mono);
-  font-size: 0.72rem;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--cyan-hi);
-  border: 1px solid var(--line);
+.badge {
+  font-size: 13px;
+  color: var(--muted);
+  border: 1px solid var(--panel-line);
+  background: #0e131f;
+  padding: 9px 15px;
   border-radius: 999px;
-  padding: 8px 16px;
-  background: rgba(10, 14, 39, 0.5);
-  backdrop-filter: blur(6px);
+  white-space: nowrap;
 }
 
-/* ---------- Hero ---------- */
-.hero {
-  width: 100%;
-  max-width: 1280px;
-  text-align: center;
-  padding: 36px 0 20px;
+main {
+  flex: 1;
   display: flex;
-  flex-direction: column;
   align-items: center;
 }
-
+.hero {
+  padding: 40px 0 96px;
+  max-width: 640px;
+}
 .eyebrow {
-  font-family: var(--font-mono);
-  font-size: 0.78rem;
-  letter-spacing: 0.34em;
-  text-transform: uppercase;
-  color: var(--cyan);
-  margin-bottom: 26px;
   display: inline-flex;
   align-items: center;
-  gap: 12px;
-}
-
-.eyebrow::before,
-.eyebrow::after {
-  content: "";
-  width: 26px;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, var(--cyan));
-}
-.eyebrow::after {
-  background: linear-gradient(90deg, var(--cyan), transparent);
-}
-
-.hero h1 {
-  font-family: var(--font-display);
-  font-weight: 900;
-  color: var(--white);
-  font-size: clamp(2.7rem, 7.5vw, 5.4rem);
-  line-height: 0.98;
-  letter-spacing: -0.01em;
-  margin-bottom: 22px;
-  /* Thin dark shadow wrapping every hero glyph, 5px blur, no offset. */
-  text-shadow: 0 0 5px rgba(0, 0, 0, 0.9);
-}
-
-.hero h1 .accent {
-  font-style: italic;
-  white-space: nowrap;
-  background: linear-gradient(120deg, var(--cyan-hi), var(--cyan) 55%, var(--cyan-deep));
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-}
-
-.hero p.lede {
-  font-size: clamp(1.05rem, 2.2vw, 1.3rem);
-  color: var(--mist);
-  max-width: 1240px;
-  margin-bottom: 14px;
-  /* Keep legible over the animated halo. */
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 1);
-}
-
-.hero p.sub {
-  font-family: var(--font-mono);
-  font-size: 0.86rem;
-  color: var(--cyan-hi);
-  letter-spacing: 0.04em;
-  max-width: 600px;
-  opacity: 0.85;
-  /* Keep legible over the animated halo. */
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 1);
-}
-
-/* ---------- Feature strip ---------- */
-/* Three-column band: feature column · CTA · feature column */
-.showcase {
-  width: 100%;
-  max-width: 1240px;
-  display: flex;
-  align-items: stretch;
-  justify-content: center;
-  gap: 44px;
-  margin: 22px 0 16px;
-}
-
-.feature-col {
-  flex: 1 1 0;
-  min-width: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 18px;
-}
-
-/* Let stacked panels share the column height evenly with the CTA. */
-.feature-col .feature {
-  flex: 1;
-}
-
-.showcase .cta {
-  flex: 0 0 530px;
-  margin: 0;
-  max-width: none;
-  /* Gentle outward curve on the left/right ends (elliptical radius). */
-  border-radius: 64px / 26px;
-}
-
-@media (max-width: 980px) {
-  .showcase {
-    flex-direction: column;
-    align-items: center;
-  }
-  .showcase .cta {
-    flex: none;
-    width: 100%;
-    max-width: 560px;
-    order: -1; /* keep the waitlist CTA on top when stacked */
-  }
-  .feature-col {
-    width: 100%;
-    max-width: 560px;
-  }
-}
-
-.feature {
-  border: 1px solid var(--line);
-  border-radius: 16px;
-  background: linear-gradient(180deg, rgba(14, 20, 48, 0.66), rgba(8, 11, 28, 0.5));
-  backdrop-filter: blur(8px);
-  padding: 24px 22px;
-  text-align: left;
-}
-
-.feature .tag {
-  font-family: var(--font-mono);
-  font-size: 0.68rem;
-  letter-spacing: 0.18em;
+  gap: 9px;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--cyan);
-  display: block;
-  margin-bottom: 12px;
-}
-
-.feature h3 {
-  font-family: var(--font-display);
-  font-weight: 700;
-  color: var(--white);
-  font-size: 1.18rem;
-  margin-bottom: 8px;
-}
-
-.feature p {
-  font-size: 0.95rem;
-  color: var(--mist);
-}
-
-/* ---------- Waitlist CTA ---------- */
-.cta {
-  width: 100%;
-  max-width: 720px;
-  margin: 26px 0 24px;
-  border: 1px solid var(--line);
-  border-radius: 24px;
-  background:
-    radial-gradient(120% 120% at 50% -20%, rgba(34, 211, 238, 0.14), transparent 60%),
-    linear-gradient(180deg, rgba(14, 20, 48, 0.82), rgba(8, 11, 28, 0.74));
-  backdrop-filter: blur(12px);
-  box-shadow: 0 30px 90px -40px rgba(34, 211, 238, 0.45);
-  padding: 30px 40px 28px;
-  text-align: center;
-}
-
-.cta h2 {
-  font-family: var(--font-display);
-  font-weight: 900;
-  color: var(--white);
-  font-size: clamp(1.8rem, 4.5vw, 2.5rem);
-  line-height: 1.02;
-  margin-bottom: 8px;
-}
-
-.cta h2 .pop {
-  color: var(--cyan);
-}
-
-.cta .cta-sub {
-  color: var(--mist);
-  font-size: 0.98rem;
+  color: var(--accent-soft);
   margin-bottom: 26px;
 }
-
-.form {
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-  text-align: left;
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+h1 {
+  font-size: clamp(34px, 5vw, 56px);
+  line-height: 1.06;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  margin-bottom: 22px;
+}
+h1 .hl {
+  color: var(--accent-soft);
+}
+.lede {
+  font-size: 18px;
+  line-height: 1.6;
+  color: var(--muted);
+  max-width: 500px;
+  margin-bottom: 40px;
 }
 
-.field label {
-  display: block;
-  font-family: var(--font-mono);
-  font-size: 0.7rem;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: var(--cyan-hi);
-  margin-bottom: 7px;
+/* CTA block: framed panel holding the widget trigger + fine print */
+.sub {
+  max-width: 560px;
+  background: var(--panel);
+  border: 1px solid var(--panel-line);
+  border-radius: 18px;
+  padding: 20px;
 }
-
-.field label .req {
-  color: var(--cyan);
-}
-.field label .opt {
-  color: var(--mist);
-  opacity: 0.6;
-}
-
-.field input {
+.cta-btn {
   width: 100%;
-  background: rgba(6, 8, 15, 0.6);
-  border: 1px solid var(--line);
-  border-radius: 12px;
-  padding: 14px 16px;
-  color: var(--white);
-  font-family: var(--font-ui);
-  font-size: 1rem;
-  font-weight: 600;
-  transition: border-color 0.18s ease, box-shadow 0.18s ease;
-}
-
-.field input::placeholder {
-  color: rgba(174, 185, 214, 0.45);
-  font-weight: 500;
-}
-
-.field input:focus {
-  outline: none;
-  border-color: var(--cyan);
-  box-shadow: 0 0 0 3px rgba(34, 211, 238, 0.18);
-}
-
-.field input:user-invalid {
-  border-color: #f87171;
-}
-
-.submit {
-  margin-top: 8px;
-  width: 100%;
+  height: 56px;
+  padding: 0 26px;
   border: none;
+  border-radius: 13px;
   cursor: pointer;
-  border-radius: 12px;
-  padding: 16px 20px;
-  font-family: var(--font-display);
-  font-weight: 900;
-  letter-spacing: 0.04em;
-  font-size: 1.05rem;
-  text-transform: uppercase;
-  color: var(--ink);
-  background: linear-gradient(120deg, var(--cyan-hi), var(--cyan) 60%, var(--cyan-deep));
-  box-shadow: 0 16px 40px -16px rgba(34, 211, 238, 0.7);
-  transition: transform 0.14s ease, box-shadow 0.14s ease, filter 0.14s ease;
+  background: linear-gradient(150deg, var(--accent), var(--accent-2));
+  color: #fff;
+  font-family: inherit;
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+  transition: transform 0.12s, opacity 0.15s;
 }
-
-.submit:hover:not(:disabled) {
-  transform: translateY(-2px);
-  filter: brightness(1.06);
-  box-shadow: 0 22px 50px -16px rgba(34, 211, 238, 0.85);
+.cta-btn:hover {
+  transform: translateY(-1px);
 }
-
-.submit:active:not(:disabled) {
+.cta-btn:active {
   transform: translateY(0);
 }
-
-.submit:disabled {
+.cta-btn:disabled {
   opacity: 0.6;
-  cursor: not-allowed;
+  cursor: default;
+  transform: none;
+}
+.fine {
+  margin-top: 14px;
+  font-size: 13.5px;
+  color: #6b7186;
 }
 
-.form-note {
-  font-family: var(--font-mono);
-  font-size: 0.7rem;
-  color: var(--mist);
-  opacity: 0.7;
-  text-align: center;
-  margin-top: 4px;
+footer {
+  padding: 24px 0 34px;
 }
-
-/* Success state */
-.success {
-  text-align: center;
-  padding: 12px 0 4px;
-}
-.success .check {
-  font-size: 2.4rem;
-  color: var(--cyan);
-  margin-bottom: 10px;
-}
-.success h3 {
-  font-family: var(--font-display);
-  font-weight: 900;
-  color: var(--white);
-  font-size: 1.5rem;
-  margin-bottom: 8px;
-}
-.success p {
-  color: var(--mist);
-}
-
-/* ---------- Footer ---------- */
-.footer {
-  width: 100%;
-  max-width: 1120px;
-  margin-top: auto;
-  padding: 40px 4px 32px;
+.foot {
   display: flex;
-  align-items: center;
-  justify-content: center;
-  border-top: 1px solid var(--line);
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  font-size: 13px;
+  color: #565d72;
+}
+.foot a {
+  color: #7b8299;
+  text-decoration: none;
+}
+.foot a:hover {
+  color: var(--accent-soft);
 }
 
-.footer p {
-  font-family: var(--font-mono);
-  font-size: 0.78rem;
-  letter-spacing: 0.1em;
-  color: var(--mist);
-  opacity: 0.75;
-}
-
-@media (max-width: 760px) {
-  .features {
-    grid-template-columns: 1fr;
+@media (max-width: 640px) {
+  .wrap {
+    padding: 0 24px;
   }
-  .topbar {
-    padding: 20px 4px;
-  }
-  .brand img {
-    width: 64px;
-    height: 64px;
-  }
-  .nav-pill {
+  .badge {
     display: none;
   }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  html {
-    scroll-behavior: auto;
+  .hero {
+    padding: 28px 0 64px;
   }
 }

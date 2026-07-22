@@ -1,102 +1,83 @@
-import Image from 'next/image'
-import WaitlistForm from '@/components/WaitlistForm'
-import VantaHalo from '@/components/VantaHalo'
+import Image from "next/image";
+import Script from "next/script";
 
-export default function Home () {
+/*
+ * Static landing page — a 1:1 port of public/index.html (the design source
+ * of truth). No form, no backend: lead capture happens in the qualified.at
+ * questionnaire widget, which attaches to the #waitlist-cta button.
+ */
+
+// Signed embed URL from the qualified.at site dashboard, e.g.
+//   https://qualified.at/embed/<embed_token>.js?sig=<HMAC>&origin=https://equilibris.ai
+// While null the button is inert (nothing to load yet).
+const EMBED_SRC: string | null = null; // TODO: paste signed qualified.at embed URL
+
+export default function Home() {
   return (
     <>
-      <VantaHalo />
-      <div className='vanta-veil' aria-hidden='true' />
-
-      <div className='page'>
-        {/* ---------- Top bar ---------- */}
-        <header className='topbar'>
-          <div className='brand'>
+      <header>
+        <div className="wrap bar">
+          <a className="logo" href="#" aria-label="Equilibris">
             <Image
-              src='/assets/images/logos/equilibris-logo-symbol.png'
-              alt='Equilibris'
-              width={80}
-              height={80}
+              src="/_logo_mark.png"
+              alt="Equilibris"
+              width={300}
+              height={317}
               priority
             />
-            <span className='brand-name'>Equilibris</span>
-          </div>
-          <span className='nav-pill'>Private Beta · 2026</span>
-        </header>
+            <span className="word">EQUILIBRIS</span>
+          </a>
+          <div className="badge">Private beta &middot; US small business owners</div>
+        </div>
+      </header>
 
-        {/* ---------- Hero ---------- */}
-        <section className='hero'>
-          <span className='eyebrow'>AI-Powered Financial Intelligence</span>
-          <h1>
-            Your taxes,
-            <br />
-            <span className='accent'>at your fingertips.</span>
-          </h1>
-          <p className='lede'>
-            Built for people whose returns aren&apos;t simple — business owners,
-            landlords, multi-state filers, and everyone with a little
-            complication. Equilibris finds the strategy; you keep the upside.
-          </p>
-          <p className='sub'>
-            Automatic strategy selection · Always a human at the end of the
-            line.
-          </p>
-        </section>
-
-        {/* ---------- Showcase: panels flanking the waitlist CTA ---------- */}
-        <section className='showcase' aria-label='What Equilibris does'>
-          <div className='feature-col'>
-            <article className='feature'>
-              <span className='tag'>/ complexity, handled</span>
-              <h3>Made for the complicated</h3>
-              <p>
-                Side businesses, rental properties, K-1s, equity comp. The
-                messier your situation, the more there is to optimize.
-              </p>
-            </article>
-            <article className='feature'>
-              <span className='tag'>/ strategy engine</span>
-              <h3>Automatic strategy selection</h3>
-              <p>
-                Our engine models your year and surfaces the moves that actually
-                move the needle — before the deadline, not after.
-              </p>
-            </article>
-          </div>
-
-          <section className='cta' id='waitlist' aria-label='Join the waitlist'>
-            <h2>
-              Join the <span className='pop'>Waitlist</span> Today!
-            </h2>
-            <p className='cta-sub'>
-              Be first in line when Equilibris opens. Spots in the private beta
-              are limited.
+      <main>
+        <div className="wrap">
+          <section className="hero">
+            <div className="eyebrow">
+              <span className="dot" /> Real-time tax engine
+            </div>
+            <h1>
+              Built for people who <span className="hl">run their own business.</span>
+            </h1>
+            <p className="lede">
+              We&rsquo;re opening early access soon. Join us if you&rsquo;re a
+              small-business owner and want to be first in.
             </p>
-            <WaitlistForm />
-          </section>
 
-          <div className='feature-col'>
-            <article className='feature'>
-              <span className='tag'>/ real people</span>
-              <h3>A human at the end</h3>
-              <p>
-                Software does the heavy lifting; a real, credentialed person
-                signs off. You&apos;re never left talking to a chatbot.
+            <div className="sub">
+              {/* Clicking this button opens the qualified.at questionnaire
+                  overlay; the embed script below wires the click via
+                  data-trigger="element" / data-element="#waitlist-cta". */}
+              <button type="button" id="waitlist-cta" className="cta-btn">
+                Join the waitlist
+              </button>
+              <p className="fine">
+                A few quick questions to see if we&rsquo;re a fit. No spam &mdash;
+                early access invites go out first-come.
               </p>
-            </article>
-            <article className='feature'>
-              <span className='tag'>/ real time</span>
-              <h3>Your Data there Now</h3>
-              <p>We maintain real time computations of your tax liabilities.</p>
-            </article>
-          </div>
-        </section>
+            </div>
+          </section>
+        </div>
+      </main>
 
-        {/* ---------- Footer ---------- */}
-        <footer className='footer'>
-          <p>© 2026 Equilibris Inc</p>
-        </footer>
-      </div>
+      <footer>
+        <div className="wrap foot">
+          <span>&copy; 2026 Equilibris, Inc.</span>
+          <span>
+            <a href="mailto:waitlist@equilibris.com">waitlist@equilibris.com</a>
+          </span>
+        </div>
+      </footer>
+
+      {EMBED_SRC && (
+        <Script
+          src={EMBED_SRC}
+          strategy="afterInteractive"
+          data-trigger="element"
+          data-element="#waitlist-cta"
+        />
+      )}
     </>
-  )
+  );
 }

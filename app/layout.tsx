@@ -1,41 +1,41 @@
 import type { Metadata, Viewport } from "next";
-import { Dosis } from "next/font/google";
+import { Inter } from "next/font/google";
 import "./globals.css";
 
-// Dosis (SemiBold-led) powers the UI / body type; the local Faire SprigSans
-// and Maple Mono faces are declared in globals.css.
-const dosis = Dosis({
+// Inter powers the whole static page (same face the public/index.html
+// template loads from Google Fonts; here it's self-hosted via next/font).
+const inter = Inter({
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-  variable: "--font-dosis",
+  weight: ["400", "500", "600", "700", "800"],
+  variable: "--font-inter",
   display: "swap",
 });
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://equilibris.ai"),
-  title: "Equilibris — Your taxes, at your fingertips",
+  title: "Equilibris",
   description:
-    "Tax strategy for people with real complexity — businesses, rental properties, and everything in between. Automatic strategy selection, always a human at the end of the line.",
+    "Real-time tax engine for people who run their own business. Join the early-access waitlist.",
   icons: {
-    icon: "/assets/images/logos/equilibris-logo-symbol.png",
+    icon: "/_logo_sm.png",
   },
   openGraph: {
-    title: "Equilibris — Your taxes, at your fingertips",
+    title: "Equilibris",
     description:
-      "Automatic strategy selection for complex returns. Always a human at the end of the line.",
+      "Real-time tax engine for people who run their own business. Join the early-access waitlist.",
     images: ["/assets/images/logos/equilibris-logo-full.png"],
   },
 };
 
 export const viewport: Viewport = {
-  themeColor: "#06080f",
+  themeColor: "#0b0f19",
 };
 
 export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className={dosis.variable}>
+    <html lang="en" className={inter.variable}>
       <body>{children}</body>
     </html>
   );
