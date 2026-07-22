@@ -44,14 +44,16 @@ design, change both (or change the template and re-port).
 
 ## The waitlist CTA
 
-The `#waitlist-cta` button is wired for the qualified.at embed script:
+The `#get-quote` button opens the qualified.at questionnaire overlay. Two
+scripts (in `app/page.tsx` and mirrored in `public/index.html`) power it:
 
-```
-EMBED_SRC in app/page.tsx  →  signed embed URL from the qualified.at dashboard
-```
+1. the **inquirex-js widget bundle** (`/inquirex-js/<id>`), and
+2. the **signed embed loader** (`/embed/<token>?origin=…&sig=…`) with
+   `data-trigger="element"`, `data-element="#get-quote"`.
 
-While `EMBED_SRC` is `null` the button is inert. Set it to activate the
-questionnaire overlay (`data-trigger="element"`, `data-element="#waitlist-cta"`).
+The `sig` is an HMAC over `embed_token:origin`, so the snippet only works on
+`https://equilibris.ai` — regenerate it in the qualified.at dashboard if the
+origin ever changes.
 
 ## Commands (`just`)
 

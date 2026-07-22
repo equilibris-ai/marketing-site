@@ -11,7 +11,7 @@ the full overview.
 
 **There is no backend here.** No database, no auth, no email, no API routes.
 Lead capture happens inside the qualified.at questionnaire widget attached to
-the `#waitlist-cta` button. The previous dynamic version (Supabase admin,
+the `#get-quote` button. The previous dynamic version (Supabase admin,
 Prisma waitlist) is preserved on the **`marketing/dynamic`** branch — do not
 reintroduce those pieces on `main`.
 
