@@ -48,8 +48,7 @@ export default function Home() {
                 Join the waitlist
               </button>
               <p className="fine">
-                A few quick questions to see if we&rsquo;re a fit. No spam &mdash;
-                early access invites go out first-come.
+              No spam. Early access invites go out first-come. Unsubscribe anytime.
               </p>
             </div>
           </section>
