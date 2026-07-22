@@ -17,7 +17,7 @@ export const metadata: Metadata = {
   description:
     "Real-time tax engine for people who run their own business. Join the early-access waitlist.",
   icons: {
-    icon: "/_logo_sm.png",
+    icon: "/favicon.ico",
   },
   openGraph: {
     title: "Equilibris",
