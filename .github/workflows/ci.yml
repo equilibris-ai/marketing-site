@@ -16,8 +16,6 @@ jobs:
         with:
           bun-version: latest
 
-      # `bun install` runs the postinstall `prisma generate`, so the generated
-      # client exists for lint/test/build.
       - name: Install dependencies
         run: bun install --frozen-lockfile
 
@@ -27,13 +25,8 @@ jobs:
       - name: Test
         run: bun test
 
-      # Type-checks and builds. Placeholder env vars only — the build never
-      # connects to the database (admin/API routes are dynamic, not prerendered).
+      # Type-checks and builds the static site — no external services needed.
       - name: Build
         run: bun run build
         env:
-          DATABASE_DSN: postgresql://user:pass@localhost:5432/db
           NEXT_PUBLIC_SITE_URL: https://example.com
-          NEXT_PUBLIC_SUPABASE_URL: https://placeholder.supabase.co
-          NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: placeholder-key
-          ADMIN_EMAILS: ci@example.com

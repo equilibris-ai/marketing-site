@@ -1,5 +1,5 @@
 # marketing-site — task runner
-# Stack: React + Next.js (run with bun), TailwindCSS, Supabase (PostgreSQL).
+# Stack: static landing page rendered by Next.js (run with bun).
 # Run `just` or `just --list` to see available recipes.
 
 set dotenv-load := true
@@ -8,30 +8,21 @@ set dotenv-load := true
 default:
     @just --list
 
-# Install dependencies and generate the Prisma client
+# Install dependencies
 setup:
     bun install
-    bunx prisma generate
-
-# Generate the Prisma client and sync the schema (expects DATABASE_URL → Supabase Postgres)
-db-setup:
-    bunx prisma generate
-    bunx prisma migrate dev --name init
-
-# Create and apply a new migration from schema.prisma changes
-db-migrate:
-    bunx prisma migrate dev
-
-db-reset:
-    bunx prisma migrate reset --schema=prisma/schema.prisma -f
 
 # Run the Next.js dev server (http://localhost:3000)
-start:
-    npx next start
+dev:
+    bun run dev
 
-# Build the production bundle
+# Serve the production build
+start:
+    bun run start
+
+# Build the production bundle (type-checks along the way)
 build:
-    npx prisma generate && npx next build
+    bun run build
 
 # Run the unit test suite
 test:
@@ -44,8 +35,6 @@ lint:
 # Lint, test, and build — the full pre-push gate
 check: lint test build
 
-# Remove build artifacts, caches, generated client, and installed dependencies
+# Remove build artifacts, caches, and installed dependencies
 clean:
-    rm -rf .next node_modules .turbo src/generated
-
-
+    rm -rf .next node_modules .turbo
