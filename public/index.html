@@ -5,6 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Equilibris</title>
     <link rel="icon" href="favicon.ico" sizes="48x48 32x32 16x16" />
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-LWHJF30VGP"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-LWHJF30VGP');
+    </script>
+
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -22,6 +32,11 @@
         --text: #eef0f6;
         --muted: #8a90a6;
         --field: #0d1220;
+
+          /* Ledger, seen under UV — hue-rotated out of red/green/yellow. */
+          --uv-in: 167, 139, 250; /* lilac    — money in */
+          --uv-out: 232, 74, 178; /* magenta  — money out */
+          --uv-neutral: 104, 110, 240; /* indigo — taxes, transfers, the rest */
       }
       * {
         box-sizing: border-box;
@@ -43,13 +58,59 @@
       }
       .wrap {
         width: 100%;
-        max-width: 1120px;
+        max-width: 1280px; /* wide enough for hero + ledger side by side */
         margin: 0 auto;
         padding: 0 40px;
       }
 
       header {
         padding: 34px 0;
+      }
+
+      /* Engraved hairline: a dark groove with a lighter lip directly beneath it, so
+         the rule reads as cut into the surface rather than drawn on top of it. */
+      .rule {
+        height: 2px;
+        background: linear-gradient(
+          to bottom,
+          rgba(0, 0, 0, 0.9) 0 1px,
+          rgba(196, 181, 253, 0.2) 1px 2px
+        );
+      }
+      .bar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+      }
+      .logo {
+        display: flex;
+        align-items: center;
+        gap: 11px;
+        text-decoration: none;
+      }
+      .logo img {
+        height: 38px;
+        width: auto;
+        display: block;
+      } /* no shadow / glow */
+      .logo,
+      .word {
+        color: var(--text);
+      }
+      .word {
+        font-size: 22px;
+        font-weight: 700;
+        letter-spacing: 0.02em;
+      }
+      .badge {
+        font-size: 13px;
+        color: var(--muted);
+        border: 1px solid var(--panel-line);
+        background: #0e131f;
+        padding: 9px 15px;
+        border-radius: 999px;
+        white-space: nowrap;
       }
       .bar {
         display: flex;
@@ -202,6 +263,246 @@
           padding: 28px 0 64px;
         }
       }
+
+      /* ============================================================
+         Ledger ticker — the endlessly scrolling strip of (fictitious)
+         transactions to the right of the hero. Motion lives in
+         src/components/ledger-ticker.tsx; everything here is layout,
+         the row tints, and the top/bottom fade.
+
+         The tints are read "through an ultra-violet lens" so the strip
+         belongs to the violet page rather than sitting on top of it:
+         every semantic hue is rotated into the UV band, keeping the
+         three-way separation but none of the traffic-light look.
+           money in   -> lilac    @ 30%   (was green)
+           money out  -> magenta  @ 20%   (was red)
+           everything -> indigo   @ 25%   (was yellow)
+         A violet bloom sits over the viewport as the lens itself.
+         ============================================================ */
+
+      /* Hero + ledger sit side by side; the hero keeps its own max-width. */
+      .stage {
+        display: flex;
+        align-items: stretch;
+        justify-content: space-between;
+        gap: 40px;
+        width: 100%;
+      }
+
+      .stage > .hero {
+        flex: 1 1 auto;
+        min-width: 0;
+      }
+
+      .ledger {
+        flex: 0 0 520px;
+        align-self: center;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        font-variant-numeric: tabular-nums;
+        /* Fades in once the track has been measured, so the first paint never
+           shows an unpositioned list. */
+        opacity: 0;
+        transition: opacity 0.6s ease;
+      }
+      .ledger.is-ready {
+        opacity: 1;
+      }
+
+      .ledger-head,
+      .ledger-row {
+        display: grid;
+        grid-template-columns: 76px minmax(0, 1fr) 84px 96px;
+        gap: 8px;
+        align-items: center;
+      }
+      .ledger-head {
+        padding: 0 12px 6px;
+        font-size: 10.5px;
+        font-weight: 600;
+        letter-spacing: 0.13em;
+        text-transform: uppercase;
+        color: #6f6798;
+      }
+      .ledger-head .num {
+        text-align: right;
+      }
+
+      .ledger-viewport {
+        position: relative;
+        height: 460px;
+        overflow: hidden;
+        cursor: grab;
+        touch-action: none;
+        /* Fade in at the top, out at the bottom. */
+        -webkit-mask-image: linear-gradient(
+          to bottom,
+          transparent 0,
+          #000 14%,
+          #000 84%,
+          transparent 100%
+        );
+        mask-image: linear-gradient(
+          to bottom,
+          transparent 0,
+          #000 14%,
+          #000 84%,
+          transparent 100%
+        );
+      }
+      .ledger-viewport::before {
+        content: '';
+        position: absolute;
+        inset: -10% -20%;
+        z-index: 2;
+        pointer-events: none;
+        background: radial-gradient(
+            120% 70% at 50% 45%,
+            rgba(124, 58, 237, 0.22),
+            rgba(124, 58, 237, 0) 72%
+          ),
+          linear-gradient(
+            180deg,
+            rgba(167, 139, 250, 0.14),
+            rgba(88, 28, 135, 0) 40%,
+            rgba(109, 40, 217, 0.16)
+          );
+      }
+      .ledger.is-dragging .ledger-viewport {
+        cursor: grabbing;
+      }
+
+      .ledger-track {
+        will-change: transform;
+      }
+
+      .ledger-row {
+        padding: 9px 12px;
+        margin-bottom: 4px;
+        border-radius: 8px;
+        border: 1px solid transparent;
+        font-size: 12.5px;
+        line-height: 1.25;
+        color: #cdd0e6;
+      }
+      .ledger-row.is-expense {
+        background: rgba(var(--uv-out), 0.2);
+        border-color: rgba(var(--uv-out), 0.34);
+      }
+      .ledger-row.is-expense .ledger-amount {
+        color: #ffc7ec;
+      }
+      .ledger-row.is-income {
+        background: rgba(var(--uv-in), 0.3);
+        border-color: rgba(var(--uv-in), 0.44);
+      }
+      .ledger-row.is-income .ledger-amount {
+        color: #ede9ff;
+      }
+      .ledger-row.is-other {
+        background: rgba(var(--uv-neutral), 0.25);
+        border-color: rgba(var(--uv-neutral), 0.36);
+      }
+      .ledger-row.is-other .ledger-amount {
+        color: #dbdcff;
+      }
+
+      .ledger-date {
+        color: #b3a8d8;
+        font-size: 11.5px;
+      }
+      .ledger-label {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        color: #ebe8f8;
+      }
+      .ledger-amount {
+        text-align: right;
+        font-weight: 600;
+        color: #f2f4fb;
+      }
+      .ledger-bracket {
+        font-size: 11px;
+        color: #b9b2d6;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      /* Paused state reads as a deliberate hold, not a stall. */
+      .ledger.is-paused .ledger-viewport::after {
+        content: 'paused — click to resume';
+        position: absolute;
+        z-index: 3;
+        right: 12px;
+        bottom: 8px;
+        font-size: 10.5px;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--accent-soft);
+      }
+
+      @media (max-width: 1100px) {
+        .ledger {
+          flex-basis: 420px;
+        }
+        .stage {
+          gap: 32px;
+        }
+      }
+      /* Narrow viewports stack the two columns: the pitch and its CTA first, the
+         scrolling ledger directly beneath it. */
+      @media (max-width: 900px) {
+        main {
+          align-items: flex-start;
+        }
+        .stage {
+          flex-direction: column;
+          align-items: stretch;
+          gap: 36px;
+          padding-bottom: 64px;
+        }
+        .stage > .hero {
+          max-width: none;
+          padding-bottom: 0;
+        }
+        .ledger {
+          flex: 0 0 auto;
+          width: 100%;
+          align-self: stretch;
+        }
+        .ledger-viewport {
+          height: 320px;
+        }
+      }
+
+      /* Too narrow for four columns — the row folds into two lines, description
+         and amount over date and bracket. */
+      @media (max-width: 560px) {
+        .ledger-head {
+          display: none;
+        }
+        .ledger-row {
+          grid-template-columns: minmax(0, 1fr) auto;
+          gap: 3px 12px;
+          padding: 10px 12px;
+        }
+        .ledger-label {
+          grid-area: 1 / 1;
+        }
+        .ledger-amount {
+          grid-area: 1 / 2;
+        }
+        .ledger-date {
+          grid-area: 2 / 1;
+        }
+        .ledger-bracket {
+          grid-area: 2 / 2;
+          text-align: right;
+        }
+      }
     </style>
   </head>
   <body>
@@ -215,8 +516,10 @@
       </div>
     </header>
 
+    <div class="wrap"><div class="rule"></div></div>
+
     <main>
-      <div class="wrap">
+      <div class="wrap stage">
         <section class="hero">
           <div class="eyebrow">
             <span class="dot"></span> Real-time tax engine
@@ -242,19 +545,230 @@
             </p>
           </div>
         </section>
+
+          <!-- Static snapshot of the ledger strip. The live page renders this
+               from src/lib/ledger.ts and animates it in
+               src/components/ledger-ticker.tsx (click to pause, drag to
+               scrub, wheel to change speed); only the look is mirrored here. -->
+          <div class="ledger is-ready" aria-hidden="true">
+            <div class="ledger-head">
+              <span>Date</span>
+              <span>What this is</span>
+              <span class="num">Amount</span>
+              <span>Tax Bracket</span>
+            </div>
+            <div class="ledger-viewport">
+              <div class="ledger-track">
+                <div class="ledger-copy">
+                  <div class="ledger-row is-income">
+                    <span class="ledger-date">2026/09/09</span>
+                    <span class="ledger-label">Merchant deposit — cards</span>
+                    <span class="ledger-amount">$34,024</span>
+                    <span class="ledger-bracket">Income</span>
+                  </div>
+                  <div class="ledger-row is-expense">
+                    <span class="ledger-date">2026/09/09</span>
+                    <span class="ledger-label">Payroll run, semi-monthly</span>
+                    <span class="ledger-amount">($120,204)</span>
+                    <span class="ledger-bracket">Payroll</span>
+                  </div>
+                  <div class="ledger-row is-other">
+                    <span class="ledger-date">2026/09/08</span>
+                    <span class="ledger-label">Payroll taxes disbursed</span>
+                    <span class="ledger-amount">($23,344)</span>
+                    <span class="ledger-bracket">Taxes Paid</span>
+                  </div>
+                  <div class="ledger-row is-expense">
+                    <span class="ledger-date">2026/09/08</span>
+                    <span class="ledger-label">Office furniture</span>
+                    <span class="ledger-amount">($17,994)</span>
+                    <span class="ledger-bracket">Office Expense</span>
+                  </div>
+                  <div class="ledger-row is-income">
+                    <span class="ledger-date">2026/09/07</span>
+                    <span class="ledger-label">Client retainer — Q3</span>
+                    <span class="ledger-amount">$88,500</span>
+                    <span class="ledger-bracket">Income</span>
+                  </div>
+                  <div class="ledger-row is-expense">
+                    <span class="ledger-date">2026/09/06</span>
+                    <span class="ledger-label">Raw materials inbound</span>
+                    <span class="ledger-amount">($41,880)</span>
+                    <span class="ledger-bracket">Cost of Goods</span>
+                  </div>
+                  <div class="ledger-row is-other">
+                    <span class="ledger-date">2026/09/05</span>
+                    <span class="ledger-label">Estimated federal tax, Q3</span>
+                    <span class="ledger-amount">($52,000)</span>
+                    <span class="ledger-bracket">Taxes Paid</span>
+                  </div>
+                  <div class="ledger-row is-income">
+                    <span class="ledger-date">2026/09/04</span>
+                    <span class="ledger-label">Wholesale invoice settled</span>
+                    <span class="ledger-amount">$26,740</span>
+                    <span class="ledger-bracket">Income</span>
+                  </div>
+                  <div class="ledger-row is-expense">
+                    <span class="ledger-date">2026/09/03</span>
+                    <span class="ledger-label">Cloud infrastructure</span>
+                    <span class="ledger-amount">($8,412)</span>
+                    <span class="ledger-bracket">Business Expense</span>
+                  </div>
+                  <div class="ledger-row is-expense">
+                    <span class="ledger-date">2026/09/02</span>
+                    <span class="ledger-label">Contract fabrication run</span>
+                    <span class="ledger-amount">($63,150)</span>
+                    <span class="ledger-bracket">Cost of Goods</span>
+                  </div>
+                  <div class="ledger-row is-other">
+                    <span class="ledger-date">2026/09/01</span>
+                    <span class="ledger-label">Owner draw — transfer out</span>
+                    <span class="ledger-amount">($30,000)</span>
+                    <span class="ledger-bracket">Distribution</span>
+                  </div>
+                  <div class="ledger-row is-income">
+                    <span class="ledger-date">2026/08/31</span>
+                    <span class="ledger-label">Marketplace payout</span>
+                    <span class="ledger-amount">$19,318</span>
+                    <span class="ledger-bracket">Income</span>
+                  </div>
+                  <div class="ledger-row is-expense">
+                    <span class="ledger-date">2026/08/30</span>
+                    <span class="ledger-label">Commercial lease</span>
+                    <span class="ledger-amount">($14,500)</span>
+                    <span class="ledger-bracket">Rent Expense</span>
+                  </div>
+                  <div class="ledger-row is-other">
+                    <span class="ledger-date">2026/08/29</span>
+                    <span class="ledger-label">State sales tax remitted</span>
+                    <span class="ledger-amount">($9,877)</span>
+                    <span class="ledger-bracket">Taxes Paid</span>
+                  </div>
+                  <div class="ledger-row is-expense">
+                    <span class="ledger-date">2026/08/28</span>
+                    <span class="ledger-label">Freight &amp; logistics</span>
+                    <span class="ledger-amount">($6,204)</span>
+                    <span class="ledger-bracket">Cost of Goods</span>
+                  </div>
+                  <div class="ledger-row is-expense">
+                    <span class="ledger-date">2026/08/27</span>
+                    <span class="ledger-label">Payroll run, semi-monthly</span>
+                    <span class="ledger-amount">($118,960)</span>
+                    <span class="ledger-bracket">Payroll</span>
+                  </div>
+                  <div class="ledger-row is-income">
+                    <span class="ledger-date">2026/08/26</span>
+                    <span class="ledger-label">Subscription revenue</span>
+                    <span class="ledger-amount">$47,205</span>
+                    <span class="ledger-bracket">Income</span>
+                  </div>
+                  <div class="ledger-row is-expense">
+                    <span class="ledger-date">2026/08/25</span>
+                    <span class="ledger-label">Health benefits, group</span>
+                    <span class="ledger-amount">($21,470)</span>
+                    <span class="ledger-bracket">Payroll</span>
+                  </div>
+                  <div class="ledger-row is-other">
+                    <span class="ledger-date">2026/08/24</span>
+                    <span class="ledger-label">Equipment, depreciable</span>
+                    <span class="ledger-amount">($28,900)</span>
+                    <span class="ledger-bracket">Capitalized</span>
+                  </div>
+                  <div class="ledger-row is-income">
+                    <span class="ledger-date">2026/08/23</span>
+                    <span class="ledger-label">Consulting fee received</span>
+                    <span class="ledger-amount">$15,600</span>
+                    <span class="ledger-bracket">Income</span>
+                  </div>
+                  <div class="ledger-row is-expense">
+                    <span class="ledger-date">2026/08/22</span>
+                    <span class="ledger-label">Professional services</span>
+                    <span class="ledger-amount">($7,250)</span>
+                    <span class="ledger-bracket">Business Expense</span>
+                  </div>
+                  <div class="ledger-row is-expense">
+                    <span class="ledger-date">2026/08/21</span>
+                    <span class="ledger-label">Packaging &amp; fulfillment</span>
+                    <span class="ledger-amount">($11,035)</span>
+                    <span class="ledger-bracket">Cost of Goods</span>
+                  </div>
+                  <div class="ledger-row is-income">
+                    <span class="ledger-date">2026/08/20</span>
+                    <span class="ledger-label">Interest earned, operating</span>
+                    <span class="ledger-amount">$1,284</span>
+                    <span class="ledger-bracket">Income</span>
+                  </div>
+                  <div class="ledger-row is-expense">
+                    <span class="ledger-date">2026/08/19</span>
+                    <span class="ledger-label">Business insurance</span>
+                    <span class="ledger-amount">($19,400)</span>
+                    <span class="ledger-bracket">Business Expense</span>
+                  </div>
+                  <div class="ledger-row is-other">
+                    <span class="ledger-date">2026/08/18</span>
+                    <span class="ledger-label">Transfer in — reserve</span>
+                    <span class="ledger-amount">$75,000</span>
+                    <span class="ledger-bracket">Transfer</span>
+                  </div>
+                  <div class="ledger-row is-expense">
+                    <span class="ledger-date">2026/08/17</span>
+                    <span class="ledger-label">Contractor invoices, 1099</span>
+                    <span class="ledger-amount">($34,820)</span>
+                    <span class="ledger-bracket">Payroll</span>
+                  </div>
+                  <div class="ledger-row is-income">
+                    <span class="ledger-date">2026/08/16</span>
+                    <span class="ledger-label">Retail storefront settlement</span>
+                    <span class="ledger-amount">$22,940</span>
+                    <span class="ledger-bracket">Income</span>
+                  </div>
+                  <div class="ledger-row is-expense">
+                    <span class="ledger-date">2026/08/15</span>
+                    <span class="ledger-label">Utilities &amp; connectivity</span>
+                    <span class="ledger-amount">($3,612)</span>
+                    <span class="ledger-bracket">Office Expense</span>
+                  </div>
+                  <div class="ledger-row is-other">
+                    <span class="ledger-date">2026/08/14</span>
+                    <span class="ledger-label">Unemployment tax deposit</span>
+                    <span class="ledger-amount">($4,188)</span>
+                    <span class="ledger-bracket">Taxes Paid</span>
+                  </div>
+                  <div class="ledger-row is-income">
+                    <span class="ledger-date">2026/08/13</span>
+                    <span class="ledger-label">Licensing royalty received</span>
+                    <span class="ledger-amount">$12,750</span>
+                    <span class="ledger-bracket">Income</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
       </div>
     </main>
+
+    <div class="wrap"><div class="rule"></div></div>
 
     <footer>
       <div class="wrap foot">
         <span>&copy; 2026 Equilibris, Inc.</span>
         <span
-          ><a href="mailto:waitlist@equilibris.com"
-            >waitlist@equilibris.com</a
+          ><a href="mailto:waitlist@equilibris.ai"
+            >waitlist@equilibris.ai</a
           ></span
         >
       </div>
     </footer>
+
+    <script>
+      // Report every press of the CTA, whether or not the visitor goes on to
+      // finish the questionnaire. Mirrors src/components/waitlist-button.tsx.
+      document.getElementById('get-quote').addEventListener('click', function () {
+        if (typeof window.gtag === 'function') {
+          window.gtag('event', 'pressed_waitlist_button');
+        }
+      });
+    </script>
 
     <!-- qualified.at questionnaire widget: the inquirex-js bundle plus the
          signed embed loader that attaches the overlay to #get-quote. -->

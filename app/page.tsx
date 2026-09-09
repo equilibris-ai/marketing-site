@@ -1,5 +1,7 @@
 import Image from "next/image";
 import Script from "next/script";
+import LedgerTicker from "@/components/ledger-ticker";
+import WaitlistButton from "@/components/waitlist-button";
 
 /*
  * Static landing page — a 1:1 port of public/index.html (the design source
@@ -26,8 +28,12 @@ export default function Home() {
         </div>
       </header>
 
+      <div className="wrap">
+        <div className="rule" />
+      </div>
+
       <main>
-        <div className="wrap">
+        <div className="wrap stage">
           <section className="hero">
             <div className="eyebrow">
               <span className="dot" /> Real-time tax engine
@@ -43,24 +49,31 @@ export default function Home() {
             <div className="sub">
               {/* Clicking this button opens the qualified.at questionnaire
                   overlay; the embed script below wires the click via
-                  data-trigger="element" / data-element="#get-quote". */}
-              <button type="button" id="get-quote" className="cta-btn">
-                Join the waitlist
-              </button>
+                  data-trigger="element" / data-element="#get-quote". The
+                  component also reports the press to GA. */}
+              <WaitlistButton />
               <p className="fine">
                 No spam. Early access invites go out first-come. Unsubscribe
                 anytime.
               </p>
             </div>
           </section>
+
+          {/* Decorative, endlessly scrolling book of fictitious transactions.
+              Interactive: click to pause, drag to scrub, wheel to change speed. */}
+          <LedgerTicker />
         </div>
       </main>
+
+      <div className="wrap">
+        <div className="rule" />
+      </div>
 
       <footer>
         <div className="wrap foot">
           <span>&copy; 2026 Equilibris, Inc.</span>
           <span>
-            <a href="mailto:waitlist@equilibris.com">waitlist@equilibris.com</a>
+            <a href="mailto:waitlist@equilibris.ai">waitlist@equilibris.ai</a>
           </span>
         </div>
       </footer>
