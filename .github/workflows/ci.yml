@@ -29,4 +29,4 @@ jobs:
       - name: Build
         run: bun run build
         env:
-          NEXT_PUBLIC_SITE_URL: https://example.com
+          NEXT_PUBLIC_SITE_URL: https://equilibris.ai
