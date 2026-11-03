@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
 import SiteHeader from "@/components/site-header";
 import SiteFooter from "@/components/site-footer";
+import YouTubeVideo from "@/components/youtube-video";
 
 /*
  * /intro — the introduction video, framed by the site's header and footer.
- * The embed scales to the content width at a fixed 16:9 ratio (see .video
- * in globals.css) instead of the fixed 560×315 YouTube snippet size.
+ * The embed spans the nav width at 16:9 (see .video in globals.css) and
+ * reports video_start / video_complete to GA4.
  */
 
 export const metadata: Metadata = {
@@ -22,15 +23,7 @@ export default function Intro() {
 
       <main>
         <div className="wrap">
-          <div className="video">
-            <iframe
-              src="https://www.youtube-nocookie.com/embed/ko1Vp_gManw?si=6oTjNck_5IRo3w-u&controls=0"
-              title="Equilibris introduction video"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-              referrerPolicy="strict-origin-when-cross-origin"
-              allowFullScreen
-            />
-          </div>
+          <YouTubeVideo videoId="ko1Vp_gManw" title="Equilibris introduction video" />
         </div>
       </main>
 
