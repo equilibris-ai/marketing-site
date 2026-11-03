@@ -76,14 +76,8 @@ header {
   width: auto;
   display: block;
 } /* no shadow / glow */
-.logo,
-.word {
+.logo {
   color: var(--text);
-}
-.word {
-  font-size: 22px;
-  font-weight: 700;
-  letter-spacing: 0.02em;
 }
 .badge {
   font-size: 13px;
