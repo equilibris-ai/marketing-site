@@ -62,7 +62,7 @@ export default function RootLayout ({
               '@type': 'Organization',
               name: 'Equilibris',
               url: 'https://equilibris.ai',
-              logo: 'https://equilibris.ai/assets/images/logos/equilibris-logo-og.png'
+              logo: 'https://equilibris.ai/assets/images/logos/equilibris-logo-square.png'
             })
           }}
         />
