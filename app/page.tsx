@@ -1,7 +1,8 @@
-import Image from "next/image";
 import Script from "next/script";
 import LedgerTicker from "@/components/ledger-ticker";
 import WaitlistButton from "@/components/waitlist-button";
+import SiteHeader from "@/components/site-header";
+import SiteFooter from "@/components/site-footer";
 
 /*
  * Static landing page — a 1:1 port of public/index.html (the design source
@@ -12,25 +13,7 @@ import WaitlistButton from "@/components/waitlist-button";
 export default function Home() {
   return (
     <>
-      <header>
-        <div className="wrap bar">
-          <a className="logo" href="#" aria-label="Equilibris">
-            <Image
-              src="/_logo_mark.png"
-              alt="Equilibris"
-              width={300}
-              height={317}
-              priority
-            />
-            <span className="word">EQUILIBRIS</span>
-          </a>
-          <div className="badge">Private beta &middot; US small business owners</div>
-        </div>
-      </header>
-
-      <div className="wrap">
-        <div className="rule" />
-      </div>
+      <SiteHeader />
 
       <main>
         <div className="wrap stage">
@@ -65,18 +48,7 @@ export default function Home() {
         </div>
       </main>
 
-      <div className="wrap">
-        <div className="rule" />
-      </div>
-
-      <footer>
-        <div className="wrap foot">
-          <span>&copy; 2026 Equilibris, Inc.</span>
-          <span>
-            <a href="mailto:waitlist@equilibris.ai">waitlist@equilibris.ai</a>
-          </span>
-        </div>
-      </footer>
+      <SiteFooter />
 
       {/* qualified.at questionnaire widget: the inquirex-js bundle plus the
           signed embed loader that attaches the overlay to #get-quote. */}
