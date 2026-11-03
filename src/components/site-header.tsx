@@ -10,13 +10,12 @@ export default function SiteHeader() {
         <div className="wrap bar">
           <Link className="logo" href="/" aria-label="Equilibris">
             <Image
-              src="/_logo_mark.png"
+              src="/assets/images/logos/equilibris-logo-horizontal.svg"
               alt="Equilibris"
-              width={300}
-              height={317}
+              width={1460}
+              height={292}
               priority
             />
-            <span className="word">EQUILIBRIS</span>
           </Link>
           <div className="badge">Private beta &middot; US small business owners</div>
         </div>

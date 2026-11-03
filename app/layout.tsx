@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from 'next'
 import { Inter } from 'next/font/google'
 import Script from 'next/script'
 import './globals.css'
+import { siteOpenGraph, socialImage } from '@/lib/social'
 
 // Google Analytics 4 measurement ID. Public by design (it ships in the page),
 // so it lives here rather than in the environment.
@@ -30,26 +31,16 @@ export const metadata: Metadata = {
     apple: '/apple-touch-icon.png'
   },
   openGraph: {
+    ...siteOpenGraph,
     title: 'Equilibris | Real-time tax engine for small business owners',
     description,
-    url: '/',
-    siteName: 'Equilibris',
-    type: 'website',
-    locale: 'en_US',
-    images: [
-      {
-        url: '/assets/images/og/equilibris-og.png',
-        width: 1200,
-        height: 630,
-        alt: 'Equilibris, a real-time tax engine'
-      }
-    ]
+    url: '/'
   },
   twitter: {
     card: 'summary_large_image',
     title: 'Equilibris | Real-time tax engine for small business owners',
     description,
-    images: ['/assets/images/og/equilibris-og.png']
+    images: [socialImage.url]
   }
 }
 
@@ -71,7 +62,7 @@ export default function RootLayout ({
               '@type': 'Organization',
               name: 'Equilibris',
               url: 'https://equilibris.ai',
-              logo: 'https://equilibris.ai/assets/images/logos/equilibris-logo-og.png'
+              logo: 'https://equilibris.ai/assets/images/logos/equilibris-logo-square.png'
             })
           }}
         />
