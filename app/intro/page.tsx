@@ -24,7 +24,7 @@ export default function Intro() {
         <div className="wrap">
           <div className="video">
             <iframe
-              src="https://www.youtube.com/embed/ko1Vp_gManw?si=6oTjNck_5IRo3w-u"
+              src="https://www.youtube-nocookie.com/embed/ko1Vp_gManw?si=6oTjNck_5IRo3w-u&controls=0"
               title="Equilibris introduction video"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
               referrerPolicy="strict-origin-when-cross-origin"
