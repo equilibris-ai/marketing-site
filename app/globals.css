@@ -201,8 +201,8 @@ footer {
 
 /* /intro: a responsive 16:9 video, framed like the CTA panel. */
 .video {
-  max-width: 960px;
-  margin: 48px auto;
+  width: 100%;
+  margin: 48px 0;
   aspect-ratio: 16 / 9;
   background: var(--panel);
   border: 1px solid var(--panel-line);
